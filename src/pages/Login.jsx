@@ -1,18 +1,40 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useMotionTemplate, useMotionValue, motion } from "motion/react";
 import * as LabelPrimitive from "@radix-ui/react-label";
-import {
-  IconBrandGithub,
-  IconBrandGoogle,
-  IconBrandOnlyfans,
-} from "@tabler/icons-react";
 
 const Login = () => {
-  const handleSubmit = (e) => {
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    setError("");
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Login failed");
+
+      // JWT save
+      localStorage.setItem("token", data.token);
+
+      console.log("User logged in:", data);
+      alert("Login successful!");
+
+      // Redirect to dashboard or home page
+      window.location.href = "/dashboard"; // তুমি চাইলে অন্য route দিতে পারো
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -23,15 +45,27 @@ const Login = () => {
           Login to your TravelExplore account
         </p>
 
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" placeholder="john@travel.com" type="email" />
+            <Input
+              id="email"
+              name="email"
+              placeholder="john@travel.com"
+              type="email"
+            />
           </LabelInputContainer>
 
           <LabelInputContainer className="mb-4">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" placeholder="••••••••" type="password" />
+            <Input
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              type="password"
+            />
           </LabelInputContainer>
 
           <button
@@ -48,14 +82,6 @@ const Login = () => {
               Sign up
             </a>
           </p>
-
-          <div className="my-6 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700" />
-
-          <div className="flex flex-col space-y-3">
-            <SocialButton icon={IconBrandGithub} text="GitHub" />
-            <SocialButton icon={IconBrandGoogle} text="Google" />
-            <SocialButton icon={IconBrandOnlyfans} text="OnlyFans" />
-          </div>
         </form>
       </div>
     </div>
@@ -64,7 +90,8 @@ const Login = () => {
 
 export default Login;
 
-// Bottom Gradient Effect for Buttons
+// ---------------- Helper Components ----------------
+
 const BottomGradient = () => (
   <>
     <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
@@ -72,23 +99,12 @@ const BottomGradient = () => (
   </>
 );
 
-// Social Button Component
-const SocialButton = ({ icon: Icon, text }) => (
-  <button className="group/btn flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-100 px-4 font-medium text-black dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-200 transition">
-    <Icon className="h-4 w-4" />
-    <span className="text-sm">{text}</span>
-    <BottomGradient />
-  </button>
-);
-
-// LabelInputContainer Wrapper
 const LabelInputContainer = ({ children, className }) => (
   <div className={cn("flex w-full flex-col space-y-2", className)}>
     {children}
   </div>
 );
 
-// Input Component
 const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   const radius = 100;
   const [visible, setVisible] = React.useState(false);
@@ -129,7 +145,6 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
 });
 Input.displayName = "Input";
 
-// Label Component
 const Label = React.forwardRef(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}

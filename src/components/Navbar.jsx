@@ -1,16 +1,24 @@
-// src/components/Navbar.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react"; 
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   const navLinks = [
     { path: "/", label: "Home" },
     { path: "/spots", label: "All Spots" },
-    { path: "/login", label: "Login" },
-    { path: "/register", label: "Register" },
   ];
 
   return (
@@ -18,12 +26,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
-          {/* Logo */}
+          
           <Link to="/" className="text-2xl font-bold text-indigo-600">
             Travel<span className="text-gray-800">Explore</span>
           </Link>
 
-          {/* Desktop Menu */}
+         
           <div className="hidden md:flex space-x-8">
             {navLinks.map((link) => (
               <NavLink
@@ -40,8 +48,27 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA button */}
-          <div className="hidden md:flex">
+          
+          <div className="hidden md:flex space-x-4">
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLoggedIn(false);
+                }}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            )}
+
             <Link
               to="/add-spot"
               className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
@@ -50,7 +77,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -62,7 +89,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+    
       {isOpen && (
         <div className="md:hidden bg-white shadow-md">
           <div className="px-4 pt-2 pb-3 space-y-2">
@@ -80,6 +107,27 @@ const Navbar = () => {
                 {link.label}
               </NavLink>
             ))}
+
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="block bg-indigo-600 text-white px-3 py-2 rounded-md text-center hover:bg-indigo-700 transition"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  setIsLoggedIn(false);
+                  setIsOpen(false);
+                }}
+                className="block bg-red-600 text-white px-3 py-2 rounded-md w-full text-center hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            )}
 
             <Link
               to="/add-spot"

@@ -1,3 +1,4 @@
+// client/src/routes/AppRoutes.jsx
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages/Home";
 import AllSpots from "../pages/AllSpots";
@@ -10,6 +11,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import UpdateSpot from "../pages/UpdateSpot";
 import ViewSpotDetails from "../pages/ViewSpotDetails";
+import PrivateRoute from "./PrivateRoute"; // PrivateRoute ইমপোর্ট কর
 
 // Router setup
 const router = createBrowserRouter([
@@ -27,11 +29,11 @@ const router = createBrowserRouter([
   {
     path: "/spots",
     element: (
-      <>
+      <PrivateRoute>
         <Navbar />
         <AllSpots />
         <Footer />
-      </>
+      </PrivateRoute>
     ),
     loader: async () => {
       const res = await fetch("http://localhost:5000/users");
@@ -80,7 +82,8 @@ const router = createBrowserRouter([
     element: (
       <>
         <Navbar />
-        <UpdateSpot></UpdateSpot>
+        <UpdateSpot />
+        <Footer />
       </>
     ),
   },
@@ -89,13 +92,12 @@ const router = createBrowserRouter([
     element: (
       <>
         <Navbar />
-        <ViewSpotDetails></ViewSpotDetails>
+        <ViewSpotDetails />
         <Footer />
       </>
     ),
     errorElement: <ErrorPage />,
   },
-
   {
     path: "*",
     element: (
