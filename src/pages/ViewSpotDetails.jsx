@@ -9,7 +9,7 @@ const ViewSpotDetails = () => {
   const [spot, setSpot] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${id}`)
+    fetch(`https://explore-bd-server-phi.vercel.app/users/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Spot not found");
         return res.json();

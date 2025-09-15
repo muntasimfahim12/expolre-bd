@@ -6,7 +6,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const API = "http://localhost:5000";
+  const API = "https://explore-bd-server-phi.vercel.app";
 
   // App load হলে localStorage থেকে token check
   useEffect(() => {

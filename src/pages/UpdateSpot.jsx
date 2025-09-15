@@ -17,7 +17,7 @@ const UpdateSpot = () => {
 
   // Load current spot data
   useEffect(() => {
-    fetch(`http://localhost:5000/users/${id}`)
+    fetch(`https://explore-bd-server-phi.vercel.app/users/${id}`)
       .then((res) => res.json())
       .then((data) => setSpot(data))
       .catch((err) => console.error(err));
@@ -33,7 +33,7 @@ const UpdateSpot = () => {
     e.preventDefault();
     try {
       const { _id, ...spotData } = spot; // Remove _id
-      const res = await fetch(`http://localhost:5000/users/${id}`, {
+      const res = await fetch(`https://explore-bd-server-phi.vercel.app/users/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(spotData),

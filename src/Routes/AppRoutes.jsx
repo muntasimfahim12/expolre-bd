@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       </PrivateRoute>
     ),
     loader: async () => {
-      const res = await fetch("http://localhost:5000/users");
+      const res = await fetch("https://explore-bd-server-phi.vercel.app/users");
       if (!res.ok) {
         throw new Response("Failed to load spots", { status: res.status });
       }

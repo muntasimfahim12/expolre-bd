@@ -17,7 +17,7 @@ const Register = () => {
     const password = e.target.password.value;
 
     try {
-      const res = await fetch("http://localhost:5000/register", {
+      const res = await fetch("https://explore-bd-server-phi.vercel.app/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ firstName, lastName, email, password }),

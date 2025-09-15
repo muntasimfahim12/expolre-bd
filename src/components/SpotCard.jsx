@@ -23,7 +23,7 @@ const SpotCard = () => {
     console.log(formData);
 
     // send data to the server or API here
-    fetch("http://localhost:5000/users", {
+    fetch("https://explore-bd-server-phi.vercel.app/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

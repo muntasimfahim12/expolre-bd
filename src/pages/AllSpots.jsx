@@ -18,7 +18,7 @@ const AllSpots = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:5000/users/${id}`, {
+        const res = await fetch(`https://explore-bd-server-phi.vercel.app/users/${id}`, {
           method: "DELETE",
         });
         const data = await res.json();
